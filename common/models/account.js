@@ -20,7 +20,37 @@ module.exports = function(Account) {
   };
 
   /**
-   * Sample remote methods for current test action
+   * Sample remote test action endpoint using Async Await support
+   * */
+  Account.asyncFunction = async () => {
+    try {
+      return await getData();
+    } catch (e) {
+      // Optional error exception
+      throw e;
+    }
+
+  };
+
+  /**
+   * Sample remote test action endpoint using Promises support
+   * */
+  Account.promiseFunction = () => {
+    const Promise = require('bluebird');
+    return Promise.resolve()
+      .then(() => {
+        return getData()
+      })
+      .then(results => {
+        return results
+      })
+      .catch(err => {
+        throw err
+      })
+  };
+
+  /**
+   * Sample remote methods
    * */
   Account.remoteMethod(
     'test', {
@@ -34,4 +64,35 @@ module.exports = function(Account) {
       },
     }
   );
+
+  Account.remoteMethod(
+    'asyncFunction', {
+      http: {
+        path: '/async',
+        verb: 'get',
+      },
+      returns: {
+        arg: 'data',
+        type: 'object',
+      },
+    }
+  );
+  Account.remoteMethod(
+    'promiseFunction', {
+      http: {
+        path: '/promises',
+        verb: 'get',
+      },
+      returns: {
+        arg: 'data',
+        type: 'object',
+      },
+    }
+  );
 };
+
+function getData() {
+  return {
+    string: 'Yup, data is here',
+  };
+}
